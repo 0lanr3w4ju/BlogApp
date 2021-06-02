@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PostDTO {
     @NotNull(message = "Title can not be null")
     private String title;
-    @NotNull(message = "Title can not be null")
+    @NotNull(message = "Content should not be null")
     private String content;
 
     private MultipartFile imageFile;
