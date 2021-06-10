@@ -5,7 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +26,9 @@ public class Post {
     @JoinColumn
     private Author author;
     @CreationTimestamp
-    private LocalDate dateCreated;
+    private LocalDateTime dateCreated;
     @UpdateTimestamp
-    private LocalDate dateModified;
+    private LocalDateTime dateModified;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> comments;
 

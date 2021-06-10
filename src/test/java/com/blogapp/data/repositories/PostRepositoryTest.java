@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Slf4j
@@ -41,7 +42,6 @@ class PostRepositoryTest {
         postRepository.save(post);
         assertThat(post.getId()).isNotNull();
     }
-
     @Test
     void throwExceptionWhenSavingSameTitle() {
         Post post = new Post();
@@ -59,7 +59,6 @@ class PostRepositoryTest {
         log.info("Created a BlogPost --> {}", post1);
         assertThrows(DataIntegrityViolationException.class, ()-> postRepository.save(post1));
     }
-
     @Test
     void whenPostIsSavedAuthorShouldBeSavedToo() {
         Post post = new Post();
@@ -84,14 +83,12 @@ class PostRepositoryTest {
         assertThat(savedPost).isNotNull();
         assertThat(savedPost.getAuthor()).isNotNull();
     }
-
     @Test
     void findAllPostInTheDB() {
         List<Post> existingPost = postRepository.findAll();
         assertThat(existingPost).isNotNull();
         assertThat(existingPost).hasSize(3);
     }
-
     @Test
     @Transactional
     @Rollback(value = false) //rolling back the result of this transaction is set to false.
@@ -104,7 +101,6 @@ class PostRepositoryTest {
         Post deletedPost = postRepository.findById(41).orElse(null);
         assertThat(deletedPost).isNull();
     }
-
     @Test
     void updateSavedPost() {
         Post savedPost = postRepository.findById(42).orElse(null);
@@ -118,7 +114,6 @@ class PostRepositoryTest {
         Post changedTitle = postRepository.findById(42).get();
         assertThat(changedTitle.getTitle().equals("Title post 2"));
     }
-
     @Test
     @Transactional
     void updatePostAuthor() {
@@ -143,7 +138,6 @@ class PostRepositoryTest {
 
         log.info("Upated Post --> {}", updatedPost);
     }
-
     @Test
     @Transactional
     @Rollback(value = false)
@@ -160,5 +154,16 @@ class PostRepositoryTest {
         Post updatedPost = postRepository.findById(savedPost.getId()).get();
 
         assertThat(updatedPost.getComments()).isNotNull();
+    }
+    @Test
+    @Transactional
+    void findAllPostInDescOrderTest() {
+        List<Post> allPost = postRepository.findByOrderByDateCreatedDesc();
+        assertThat(allPost).isNotEmpty();
+        log.info("All post --> {}", allPost);
+        assertTrue(allPost.get(0).getDateCreated().isAfter(allPost.get(1).getDateCreated()));
+        allPost.forEach(post -> {
+            log.info("post Date {}", post.getDateCreated());
+        });
     }
 }

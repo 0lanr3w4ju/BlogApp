@@ -5,15 +5,18 @@ import com.blogapp.data.models.Post;
 import com.blogapp.data.repositories.PostRepository;
 import com.blogapp.services.cloud.CloudStorageService;
 import com.blogapp.web.DTOs.PostDTO;
+import com.blogapp.web.exceptions.PostNotFoundException;
 import com.blogapp.web.exceptions.PostObjectIsNullException;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -23,7 +26,6 @@ public class PostServiceImplementation implements PostService {
     private PostRepository postRepository;
     @Autowired
     private CloudStorageService cloudStorageService;
-
 
     @Override
     public Post addPost(PostDTO postDTO) throws PostObjectIsNullException {
@@ -42,12 +44,11 @@ public class PostServiceImplementation implements PostService {
             try {
                 Map<?, ?> uploadResult =
                         cloudStorageService.uploadImage(postDTO.getImageFile(), ObjectUtils.asMap("public_id",
-                        "blogapp/" + postDTO.getImageFile().getOriginalFilename(),
-                        "overwrite", true));
+                        "blogapp/" + extractFileName(Objects.requireNonNull(postDTO.getImageFile().getOriginalFilename()))));
                 post.setCoverImageURL(String.valueOf(uploadResult.get("url")));
                 log.info("Image url --> {}", uploadResult.get("url"));
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException error) {
+                error.printStackTrace();
             }
         }
 //        ModelMapper modelMapper = new ModelMapper();
@@ -57,31 +58,47 @@ public class PostServiceImplementation implements PostService {
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
 
-        return postRepository.save(post);
+        try {
+            return postRepository.save(post);
+        } catch (DataIntegrityViolationException error) {
+            log.info("Exception occurred --> {}", error.getMessage());
+            throw error;
+        }
     }
-
     @Override
     public List<Post> getAllPost() {
         return postRepository.findAll();
     }
-
+    @Override
+    public List<Post> findAllPostInDescOrder() {
+        return postRepository.findByOrderByDateCreatedDesc();
+    }
     @Override
     public Post updatePost(PostDTO postDTO) {
         return null;
     }
-
     @Override
-    public Post findByID(Integer ID) {
-        return null;
-    }
+    public Post findByID(Integer ID) throws PostNotFoundException {
+        if (ID == null) {
+            throw new NullPointerException("Post Id can not be null");
+        }
 
+        Optional<Post> post = postRepository.findById(ID);
+
+        if (post.isPresent()) {
+            return post.get();
+        } else {
+            throw new PostNotFoundException("Post with ID --> {}");
+        }
+    }
     @Override
-    public void deletePostByID(Integer ID) {
-
-    }
-
+    public void deletePostByID(Integer ID) {}
     @Override
     public Post addCommentToPost(Integer ID, Comment comment) {
         return null;
+    }
+
+    private String extractFileName(String fileName) {
+        return fileName.split("\\.")[0];
     }
 }

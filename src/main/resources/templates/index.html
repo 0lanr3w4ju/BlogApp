@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>PentaBlog</title>
+    <title>PentaXBlog</title>
     <link rel="stylesheet" th:href="@{asset/css/styles/style.css}">
     <link rel="stylesheet" th:href="@{asset/css/styles/nav.css}">
     <link rel="stylesheet" th:href="@{asset/css/styles/footer.css}">
@@ -52,7 +52,7 @@
                     <a href="" class="user-name">Jen Lopez</a>
                 </a>
 
-                <p class="date-published" th:datetime="${post.dateCreated}"></p>
+                <p class="date-published" th:text="${post.dateCreated}"></p>
 
                 <a href="" class="actions">
                     <p><i class="far fa-comment"></i></p>
@@ -62,7 +62,7 @@
             <div class="post-content">
                 <p th:text="${post.content}"></p>
             </div>
-            <a href="/asset/pages/post.html">
+            <a th:href="@{/viewPost/{id}(id = ${post.getId()})}">
                 <button class="view-post">
                     continue reading
                 </button>
