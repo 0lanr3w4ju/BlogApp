@@ -23,16 +23,15 @@ public class Post {
     private String content;
 
     private String coverImageURL;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn
-    @ToString.Exclude
+//    @ToString.Exclude
     private Author author;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateModified;
-    @OneToMany(cascade = CascadeType.ALL)
-    @ToString.Exclude
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comment> comments;
 
     public void addComments(Comment ...comments) {
