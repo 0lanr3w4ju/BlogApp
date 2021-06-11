@@ -1,6 +1,7 @@
 package com.blogapp.data.models;
 
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,14 +23,16 @@ public class Post {
     private String content;
 
     private String coverImageURL;
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn
+    @ToString.Exclude
     private Author author;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateModified;
     @OneToMany(cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<Comment> comments;
 
     public void addComments(Comment ...comments) {
