@@ -22,7 +22,7 @@ public class Post {
     private String content;
 
     private String coverImageURL;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn
     private Author author;
     @CreationTimestamp
