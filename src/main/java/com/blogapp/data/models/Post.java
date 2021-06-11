@@ -32,7 +32,7 @@ public class Post {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Comment> comments;
 
-    public void addComments(Comment... comments) {
+    public void addComments(Comment ...comments) {
         if (this.comments == null) {
             this.comments = new ArrayList<>();
         }

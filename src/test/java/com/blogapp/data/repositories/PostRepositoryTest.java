@@ -32,33 +32,33 @@ class PostRepositoryTest {
     @BeforeEach
     void setUp() {
     }
-    @Test
-    void savePost() {
-        Post post = new Post();
-        post.setTitle("What is Fintech?");
-        post.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
-
-        log.info("Created a BlogPost --> {}", post);
-        postRepository.save(post);
-        assertThat(post.getId()).isNotNull();
-    }
-    @Test
-    void throwExceptionWhenSavingSameTitle() {
-        Post post = new Post();
-        post.setTitle("What is Fintech?");
-        post.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
-
-        log.info("Created a BlogPost --> {}", post);
-        postRepository.save(post);
-        assertThat(post.getId()).isNotNull();
-
-        Post post1 = new Post();
-        post1.setTitle("What is Fintech?");
-        post1.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
-
-        log.info("Created a BlogPost --> {}", post1);
-        assertThrows(DataIntegrityViolationException.class, ()-> postRepository.save(post1));
-    }
+//    @Test
+//    void savePost() {
+//        Post post = new Post();
+//        post.setTitle("What is Fintech?");
+//        post.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
+//
+//        log.info("Created a BlogPost --> {}", post);
+//        postRepository.save(post);
+//        assertThat(post.getId()).isNotNull();
+//    }
+//    @Test
+//    void throwExceptionWhenSavingSameTitle() {
+//        Post post = new Post();
+//        post.setTitle("What is Fintech?");
+//        post.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
+//
+//        log.info("Created a BlogPost --> {}", post);
+//        postRepository.save(post);
+//        assertThat(post.getId()).isNotNull();
+//
+//        Post post1 = new Post();
+//        post1.setTitle("What is Fintech?");
+//        post1.setContent("Lorem Ipsum is simply dummy text of the printing and typesetting industry.");
+//
+//        log.info("Created a BlogPost --> {}", post1);
+//        assertThrows(DataIntegrityViolationException.class, ()-> postRepository.save(post1));
+//    }
     @Test
     void whenPostIsSavedAuthorShouldBeSavedToo() {
         Post post = new Post();
